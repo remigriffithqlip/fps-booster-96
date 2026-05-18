@@ -1,37 +1,21 @@
-const fs = require('fs');
-const path = require('path');
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, json, prettyPrint } = format;
+class Logger {
+  static info(message) {
+    console.log(`[INFO] ${new Date().toISOString()}: ${message}`);
+  }
 
-const logDirectory = path.join(__dirname, 'logs');
+  static warn(message) {
+    console.warn(`[WARN] ${new Date().toISOString()}: ${message}`);
+  }
 
-if (!fs.existsSync(logDirectory)) {
-    fs.mkdirSync(logDirectory);
+  static error(message) {
+    console.error(`[ERROR] ${new Date().toISOString()}: ${message}`);
+  }
+
+  static debug(message) {
+    if (process.env.DEBUG) {
+      console.log(`[DEBUG] ${new Date().toISOString()}: ${message}`);
+    }
+  }
 }
 
-const createLogFile = () => {
-    return new transports.File({
-        filename: path.join(logDirectory, 'app.log'),
-        frequency: 'daily',
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxSize: '20m',
-        maxFiles: '14d'
-    });
-};
-
-const logger = createLogger({
-    level: 'info',
-    format: combine(
-        timestamp(),
-        json()
-    ),
-    transports: [
-        createLogFile(),
-        new transports.Console({
-            format: prettyPrint()
-        })
-    ]
-});
-
-module.exports = logger;
+export default Logger;

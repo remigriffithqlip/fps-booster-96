@@ -1,21 +1,26 @@
-class Logger {
-  static info(message) {
-    console.log(`[INFO] ${new Date().toISOString()}: ${message}`);
-  }
+const fs = require('fs');
+const path = require('path');
+const { createLogger, format, transports } = require('winston');
 
-  static warn(message) {
-    console.warn(`[WARN] ${new Date().toISOString()}: ${message}`);
-  }
-
-  static error(message) {
-    console.error(`[ERROR] ${new Date().toISOString()}: ${message}`);
-  }
-
-  static debug(message) {
-    if (process.env.DEBUG) {
-      console.log(`[DEBUG] ${new Date().toISOString()}: ${message}`);
-    }
-  }
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
 }
 
-export default Logger;
+const logger = createLogger({
+    level: 'info',
+    format: format.combine(
+        format.timestamp(),
+        format.json()
+    ),
+    transports: [
+        new transports.File({
+            filename: path.join(logDir, 'app.log'),
+            maxSize: '20m',
+            maxFiles: '14d',
+        }),
+        new transports.Console()  
+    ],
+});
+
+module.exports = logger;

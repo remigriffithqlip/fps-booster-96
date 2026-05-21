@@ -1,49 +1,38 @@
-// TypeScript-compatible type annotations
-
-type Coordinates = {
-    x: number;
-    y: number;
+const handleError = (error) => {
+    if (error instanceof TypeError) {
+        console.error('Type Error: ', error.message);
+    } else if (error instanceof ReferenceError) {
+        console.error('Reference Error: ', error.message);
+    } else if (error instanceof RangeError) {
+        console.error('Range Error: ', error.message);
+    } else {
+        console.error('Unexpected Error: ', error.message);
+    }
 };
 
-type Color = {
-    r: number;
-    g: number;
-    b: number;
+const executeWithErrorHandling = (fn) => {
+    try {
+        fn();
+    } catch (error) {
+        handleError(error);
+    }
 };
 
-/**
- * Calculates the distance between two points.
- * @param a - The first point as Coordinates.
- * @param b - The second point as Coordinates.
- * @returns The distance between the two points.
- */
-function calculateDistance(a: Coordinates, b: Coordinates): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
-}
+const validateInput = (input) => {
+    if (input == null) {
+        throw new TypeError('Input cannot be null or undefined');
+    }
+    if (typeof input !== 'number') {
+        throw new TypeError('Input must be a number');
+    }
+    if (input < 0) {
+        throw new RangeError('Input must be a positive number');
+    }
+};
 
-/**
- * Generates a random color.
- * @returns A Color object with random RGB values.
- */
-function generateRandomColor(): Color {
-    return {
-        r: Math.floor(Math.random() * 256),
-        g: Math.floor(Math.random() * 256),
-        b: Math.floor(Math.random() * 256)
-    };
-}
+const calculateFPS = (input) => {
+    validateInput(input);
+    return Math.floor(1000 / input);
+};
 
-/**
- * Clamps a value between a minimum and maximum.
- * @param value - The value to clamp.
- * @param min - The minimum value.
- * @param max - The maximum value.
- * @returns The clamped value.
- */
-function clamp(value: number, min: number, max: number): number {
-    return Math.max(min, Math.min(max, value));
-}
-
-export { calculateDistance, generateRandomColor, clamp };
+export { executeWithErrorHandling, calculateFPS };

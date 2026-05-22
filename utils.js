@@ -1,23 +1,27 @@
-function calculateFps(frames, time) {
-    return frames / (time / 1000);
-}
-
-function formatFps(fps) {
-    return fps.toFixed(2) + ' FPS';
-}
-
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
-function isPowerOfTwo(x) {
-    return (x & (x - 1)) === 0 && x > 0;
+function lerp(start, end, fraction) {
+    return start + (end - start) * fraction;
 }
 
-function requestAnimationFramePolyfill() {
-    return window.requestAnimationFrame || function(callback) {
-        return setTimeout(callback, 1000 / 60);
-    };
+function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
-export { calculateFps, formatFps, clamp, isPowerOfTwo, requestAnimationFramePolyfill };
+function distance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+function isGamepadConnected(index) {
+    return navigator.getGamepads()[index] !== null;
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+export { clamp, lerp, randomInRange, distance, isGamepadConnected, formatTime };

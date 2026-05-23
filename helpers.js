@@ -1,38 +1,29 @@
-const handleError = (error) => {
-    if (error instanceof TypeError) {
-        console.error('Type Error: ', error.message);
-    } else if (error instanceof ReferenceError) {
-        console.error('Reference Error: ', error.message);
-    } else if (error instanceof RangeError) {
-        console.error('Range Error: ', error.message);
-    } else {
-        console.error('Unexpected Error: ', error.message);
-    }
-};
+function optimizePerformance(resources) {
+    const optimizedResources = resources.map(resource => {
+        return {
+            ...resource,
+            renderPriority: calculateRenderPriority(resource)
+        };
+    });
+    return optimizedResources.sort((a, b) => a.renderPriority - b.renderPriority);
+}
 
-const executeWithErrorHandling = (fn) => {
-    try {
-        fn();
-    } catch (error) {
-        handleError(error);
-    }
-};
+function calculateRenderPriority(resource) {
+    if (resource.type === 'texture') return 1;
+    if (resource.type === 'model') return 2;
+    if (resource.type === 'sound') return 3;
+    return 4;
+}
 
-const validateInput = (input) => {
-    if (input == null) {
-        throw new TypeError('Input cannot be null or undefined');
-    }
-    if (typeof input !== 'number') {
-        throw new TypeError('Input must be a number');
-    }
-    if (input < 0) {
-        throw new RangeError('Input must be a positive number');
-    }
-};
+function preloadResources(resources) {
+    const promises = resources.map(resource => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = resource.src;
+            img.onload = () => resolve(resource);
+        });
+    });
+    return Promise.all(promises);
+}
 
-const calculateFPS = (input) => {
-    validateInput(input);
-    return Math.floor(1000 / input);
-};
-
-export { executeWithErrorHandling, calculateFPS };
+export { optimizePerformance, preloadResources };

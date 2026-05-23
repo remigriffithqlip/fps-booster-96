@@ -1,29 +1,27 @@
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const { format } = require('winston');
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
 
-const logDirectory = path.join(__dirname, 'logs');
-
-if (!fs.existsSync(logDirectory)) {
-    fs.mkdirSync(logDirectory);
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
 }
 
 const transport = new winston.transports.File({
-    filename: path.join(logDirectory, 'combined.log'),
-    maxsize: 5 * 1024 * 1024,
-    maxFiles: '10d',
+    filename: path.join(logDir, 'application.log'),
+    maxSize: '20m',
+    maxFiles: '5',
     tailable: true,
-    zippedArchive: true
+    zippedArchive: true,
 });
 
 const logger = winston.createLogger({
     level: 'info',
-    format: format.combine(
-        format.timestamp(),
-        format.json()
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
     ),
-    transports: [transport]
+    transports: [transport],
 });
 
-module.exports = logger;
+export default logger;

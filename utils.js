@@ -1,27 +1,41 @@
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
+export function calculateFps(frames: number, time: number): number {
+    return (frames / time) * 1000;
 }
 
-function lerp(start, end, fraction) {
-    return start + (end - start) * fraction;
+export function isHighPerformanceDevice(grade: string): boolean {
+    const highPerformanceGrades = ['A', 'A+', 'S'];
+    return highPerformanceGrades.includes(grade);
 }
 
-function randomInRange(min, max) {
-    return Math.random() * (max - min) + min;
+export function optimizeSettings(settings: Record<string, any>): Record<string, any> {
+    const optimizedSettings = { ...settings };
+    if (optimizedSettings.resolution > 1080) {
+        optimizedSettings.resolution = 1080;
+    }
+    if (optimizedSettings.quality === 'ultra') {
+        optimizedSettings.quality = 'high';
+    }
+    return optimizedSettings;
 }
 
-function distance(x1, y1, x2, y2) {
-    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+/**
+ * Calculates the average FPS
+ * @param fpsArray - Array of FPS values
+ * @returns Average FPS as a number
+ */
+export function averageFps(fpsArray: number[]): number {
+    const total = fpsArray.reduce((sum, fps) => sum + fps, 0);
+    return total / fpsArray.length;
 }
 
-function isGamepadConnected(index) {
-    return navigator.getGamepads()[index] !== null;
+/**
+ * Resets performance metrics to default values
+ * @returns Default metrics object
+ */
+export function resetPerformanceMetrics(): { fps: number; resolution: string; quality: string } {
+    return {
+        fps: 60,
+        resolution: '1920x1080',
+        quality: 'high'
+    };
 }
-
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-}
-
-export { clamp, lerp, randomInRange, distance, isGamepadConnected, formatTime };

@@ -1,21 +1,15 @@
-class PerformanceOptimizer {
-    constructor() {
-        this.lastFrameTime = 0;
-        this.frameInterval = 16; // Roughly 60 FPS
-    }
-
-    requestAnimationFrame(callback) {
-        const currentTime = performance.now();
-        if (currentTime - this.lastFrameTime >= this.frameInterval) {
-            this.lastFrameTime = currentTime;
-            callback();
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        if (retries > 0) {
+            await new Promise(res => setTimeout(res, delay));
+            return fetchWithRetry(url, options, retries - 1, delay);
         }
-        window.requestAnimationFrame(() => this.requestAnimationFrame(callback));
-    }
-
-    optimize(gameLoop) {
-        this.requestAnimationFrame(gameLoop);
+        throw error;
     }
 }
 
-export default new PerformanceOptimizer();
+export { fetchWithRetry };

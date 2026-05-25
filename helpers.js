@@ -1,29 +1,21 @@
-function optimizePerformance(resources) {
-    const optimizedResources = resources.map(resource => {
-        return {
-            ...resource,
-            renderPriority: calculateRenderPriority(resource)
-        };
-    });
-    return optimizedResources.sort((a, b) => a.renderPriority - b.renderPriority);
+function calculateFps(frames: number, seconds: number): number {
+    if (seconds <= 0) {
+        throw new Error('Seconds must be greater than zero');
+    }
+    return Math.floor(frames / seconds);
 }
 
-function calculateRenderPriority(resource) {
-    if (resource.type === 'texture') return 1;
-    if (resource.type === 'model') return 2;
-    if (resource.type === 'sound') return 3;
-    return 4;
+function isFrameDrop(fps: number, threshold: number = 30): boolean {
+    return fps < threshold;
 }
 
-function preloadResources(resources) {
-    const promises = resources.map(resource => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.src = resource.src;
-            img.onload = () => resolve(resource);
-        });
-    });
-    return Promise.all(promises);
+function formatFps(fps: number): string {
+    return `${fps} FPS`;
 }
 
-export { optimizePerformance, preloadResources };
+function averageFps(fpsArray: number[]): number {
+    const total = fpsArray.reduce((acc, fps) => acc + fps, 0);
+    return Math.floor(total / fpsArray.length);
+}
+
+export { calculateFps, isFrameDrop, formatFps, averageFps };

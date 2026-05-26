@@ -1,26 +1,20 @@
-// Default configuration settings
+const fs = require('fs');
+const path = require('path');
+
 const defaultConfig = {
     resolution: '1920x1080',
-    fpsLimit: 60,
-    graphicsQuality: 'high',
-    soundEffects: true,
-    musicVolume: 80
+    fps: 60,
+    volume: 100,
+    graphics: 'high'
 };
 
-// Load configuration from JSON file
-function loadConfig(file) {
-    return fetch(file)
-        .then(response => response.json())
-        .catch(() => ({}));
+function loadConfig(filePath) {
+    const fullPath = path.resolve(__dirname, filePath);
+    if (fs.existsSync(fullPath)) {
+        const fileConfig = JSON.parse(fs.readFileSync(fullPath, 'utf-8'));
+        return { ...defaultConfig, ...fileConfig };
+    }
+    return defaultConfig;
 }
 
-// Merge defaults with loaded config
-function getConfig(userConfig) {
-    return {...defaultConfig, ...userConfig};
-}
-
-// Exported function to get complete config
-export async function loadCompleteConfig(configFile) {
-    const userConfig = await loadConfig(configFile);
-    return getConfig(userConfig);
-};
+module.exports = { loadConfig };

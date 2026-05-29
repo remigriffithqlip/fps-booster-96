@@ -1,31 +1,28 @@
 class Logger {
-    constructor(level) {
-        this.level = level;
-        this.logLevels = { error: 0, warn: 1, info: 2, debug: 3 };
+    constructor() {
+        this.logs = [];
     }
 
-    log(message, level = 'info') {
-        if (this.logLevels[level] <= this.logLevels[this.level]) {
-            console.log(`[${level.toUpperCase()}] ${new Date().toISOString()}: ${message}`);
+    log(message) {
+        const timestamp = new Date().toISOString();
+        this.logs.push(`[${timestamp}] ${message}`);
+        this.outputToConsole(`[${timestamp}] ${message}`);
+    }
+
+    outputToConsole(message) {
+        if (typeof console === 'object' && console.log) {
+            console.log(message);
         }
     }
 
-    error(message) {
-        this.log(message, 'error');
+    getLogs() {
+        return this.logs;
     }
 
-    warn(message) {
-        this.log(message, 'warn');
-    }
-
-    info(message) {
-        this.log(message, 'info');
-    }
-
-    debug(message) {
-        this.log(message, 'debug');
+    clearLogs() {
+        this.logs = [];
     }
 }
 
-const logger = new Logger('info');
+const logger = new Logger();
 export default logger;

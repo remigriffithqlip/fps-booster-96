@@ -1,20 +1,25 @@
-const fs = require('fs');
-const path = require('path');
+// Configuration settings for fps-booster-96
 
-const defaultConfig = {
-    resolution: '1920x1080',
-    framerate: 60,
-    quality: 'high',
-    vsync: false
+const config = {
+    maxFps: 120,
+    resolution: {
+        width: 1920,
+        height: 1080
+    },
+    graphics: {
+        textureQuality: 'high',
+        antiAliasing: true,
+        shadows: 'medium'
+    },
+    audio: {
+        masterVolume: 0.8,
+        musicVolume: 0.5,
+        effectsVolume: 0.7,
+    },
+    input: {
+        sensitivity: 1.2,
+        invertYAxis: false
+    }
 };
 
-function loadConfig(configPath) {
-    const fullPath = path.resolve(configPath);
-    if (fs.existsSync(fullPath)) {
-        const userConfig = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
-        return {...defaultConfig, ...userConfig};
-    }
-    return defaultConfig;
-}
-
-module.exports = { loadConfig };
+export default config;
